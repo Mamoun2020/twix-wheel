@@ -44,6 +44,9 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    /* When the winner card makes content taller than the screen (esp. on
+       phones), fall back to top-aligned + scrollable instead of clipping. */
+    justify-content: safe center;
     gap: 16px;
     padding: calc(20px + env(safe-area-inset-top)) calc(16px + env(safe-area-inset-right)) calc(40px + env(safe-area-inset-bottom)) calc(16px + env(safe-area-inset-left));
     -webkit-font-smoothing: antialiased;
@@ -132,8 +135,8 @@
 
   /* ── phones (iPhone 11: 414 × 896) ── everything fits one screen, no scrolling ── */
   @media (max-width: 480px) {
-    :root { --wheel: min(92vw, 46vh); }
-    @supports (height: 1dvh) { :root { --wheel: min(92vw, 46dvh); } }
+    :root { --wheel: min(90vw, 42vh); }
+    @supports (height: 1dvh) { :root { --wheel: min(90vw, 42dvh); } }
     body { gap: 10px; padding-top: calc(12px + env(safe-area-inset-top)); padding-bottom: calc(20px + env(safe-area-inset-bottom)); }
     .brand { flex-wrap: nowrap; gap: 10px; }
     .logo { width: 52px; height: 52px; border-width: 2.5px; } .logo img { width: 34px; height: 34px; }
