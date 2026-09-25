@@ -100,6 +100,10 @@
   @keyframes turn { to { transform: rotate(360deg); } }
   .hint { margin: 0; font-size: clamp(14px, 2.4vw, 18px); color: rgba(255, 255, 255, 0.6); font-weight: 500; text-align: center; }
 
+  /* Winner reveal as a fixed overlay — out of the document flow, so it can never
+     shift or break the wheel/button layout on any screen size. */
+  .winner-overlay { position: fixed; inset: 0; z-index: 40; display: grid; place-items: center; padding: 20px; background: rgba(0, 0, 0, 0.6); overflow: auto; }
+  .winner-overlay[hidden] { display: none; }
   .winner {
     display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 16px 40px 18px; border-radius: 24px;
     background: linear-gradient(180deg, var(--gold-300) 0%, var(--gold-400) 55%, var(--gold-600) 100%);
@@ -212,7 +216,8 @@
   </button>
   <p class="hint" id="hint">اضغط «لفّ العجلة» لاختيار الفائز</p>
 
-  <section class="winner" id="winner" hidden aria-live="polite">
+  <div class="winner-overlay" id="winnerOverlay" hidden>
+  <section class="winner" id="winner" aria-live="polite">
     <div class="label">الفائز</div>
     <div class="name" id="winnerName"></div>
     <div class="congrats">مبروك!</div>
@@ -224,6 +229,7 @@
       <button class="btn-ghost" id="again" type="button">سحب جديد</button>
     </div>
   </section>
+  </div>
   </div>
 
   <div class="modal" id="modal" hidden role="dialog" aria-modal="true" aria-labelledby="modalTitle">
@@ -339,7 +345,7 @@
   var FONT = "'Tajawal', 'Segoe UI', Tahoma, system-ui, sans-serif";
   var $ = function (s) { return document.querySelector(s); };
   var disc = $('#disc'), slices = $('#slices'), labels = $('#labels'), empty = $('#empty'), spinBtn = $('#spin'), hint = $('#hint');
-  var countEl = $('#count'), winnerEl = $('#winner'), winnerName = $('#winnerName');
+  var countEl = $('#count'), winnerEl = $('#winner'), winnerName = $('#winnerName'), winnerOverlay = $('#winnerOverlay');
   var removeBtn = $('#remove'), againBtn = $('#again');
   var modal = $('#modal'), namesTA = $('#namesText'), editBtn = $('#edit'), saveBtn = $('#save'), cancelBtn = $('#cancel');
 
@@ -416,12 +422,12 @@
     labels.appendChild(frag);
   }
 
-  function hideWinner() { winner = null; winnerEl.hidden = true; hint.hidden = false; }
+  function hideWinner() { winner = null; winnerOverlay.hidden = true; hint.hidden = false; }
 
   function announce(name) {
     winner = name;
     winnerName.textContent = name;
-    winnerEl.hidden = false;
+    winnerOverlay.hidden = false;
     hint.hidden = true;
     winnerEl.style.animation = 'none';
     void winnerEl.offsetWidth;
